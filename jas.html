@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Sorpresa para ti 🌸</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #d9b4a8; /* fondo cálido */
+      font-family: 'Quicksand', sans-serif;
+      padding: 12px;
+    }
+
+    /* Tarjeta con apariencia de celular */
+    .phone-card {
+      max-width: 400px;
+      width: 100%;
+      background: #fef8f5;
+      border-radius: 44px;
+      box-shadow: 0 30px 50px -12px rgba(90, 40, 30, 0.5), 0 0 0 2px #f0d6cc inset;
+      padding: 2rem 1.6rem 2.2rem;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #fae2d8;
+      backdrop-filter: blur(2px);
+    }
+
+    /* pequeña "notch" simulando celular */
+    .phone-card::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 22px;
+      background: #1f1a18;
+      border-radius: 40px;
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #713f33;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      letter-spacing: -0.3px;
+    }
+    h1 span {
+      background: #f7e3db;
+      padding: 0.1rem 1rem;
+      border-radius: 60px;
+      font-size: 1.6rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 1.2rem 0 0.8rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #5d3d36;
+      font-size: 1.1rem;
+      letter-spacing: 0.2px;
+    }
+
+    input {
+      padding: 16px 18px;
+      border: 2px solid #ecd3c9;
+      border-radius: 60px;
+      font-size: 1rem;
+      background: white;
+      outline: none;
+      transition: 0.2s;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+      color: #3d2a24;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+
+    input:focus {
+      border-color: #c79584;
+      box-shadow: 0 0 0 4px rgba(199, 149, 132, 0.2);
+      transform: scale(1.01);
+    }
+
+    .btn {
+      background: #caa190;
+      border: none;
+      padding: 15px 22px;
+      border-radius: 60px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: 0.25s;
+      box-shadow: 0 8px 18px rgba(160, 100, 80, 0.2);
+      letter-spacing: 0.5px;
+      width: fit-content;
+      margin: 6px auto 0;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .btn:hover {
+      background: #b58b7a;
+      transform: scale(1.02) translateY(-2px);
+      box-shadow: 0 12px 22px rgba(140, 80, 60, 0.25);
+    }
+    .btn:active { transform: scale(0.96); }
+
+    .mensaje-error {
+      background: #ffe1dc;
+      padding: 12px 14px;
+      border-radius: 40px;
+      color: #a1443a;
+      font-weight: 600;
+      margin: 12px 0 4px;
+      display: none;
+      font-size: 0.98rem;
+      border-left: 6px solid #c25b4a;
+      text-align: center;
+    }
+
+    .mensaje-exito {
+      background: #e3f0e6;
+      padding: 12px 14px;
+      border-radius: 40px;
+      color: #1c6b44;
+      font-weight: 600;
+      margin: 12px 0 4px;
+      display: none;
+      font-size: 0.98rem;
+      border-left: 6px solid #2f8f5e;
+      text-align: center;
+    }
+
+    /* Pantalla de inicio */
+    #step0 {
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+    #step0 p {
+      color: #5d3d36;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      font-size: 1.1rem;
+    }
+
+    /* Contenido sorpresa */
+    .sorpresa {
+      display: none;
+      margin-top: 20px;
+      padding: 6px 0 8px;
+      animation: aparecerSuave 0.7s ease forwards;
+    }
+    @keyframes aparecerSuave {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .sorpresa .flores {
+      font-size: 3.2rem;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      letter-spacing: 5px;
+    }
+
+    .sorpresa h2 {
+      color: #6f3f33;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 4px 0 8px;
+      background: linear-gradient(135deg, #ac5f4b, #854e3d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .mensaje-dia {
+      background: #fcf3ee;
+      padding: 18px 18px 14px;
+      border-radius: 36px;
+      text-align: left;
+      box-shadow: 0 6px 14px rgba(150, 90, 70, 0.06);
+      border: 1px solid #fadfd6;
+      color: #3f2a27;
+      font-weight: 500;
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    .mensaje-dia p {
+      margin: 10px 0;
+    }
+    .mensaje-dia .emoji-grupo { font-size: 1.8rem; letter-spacing: 3px; }
+    .mensaje-dia strong { color: #b34f3a; font-weight: 700; }
+    .ramito {
+      font-size: 2.6rem;
+      margin: 4px 0 2px;
+      background: #fceee9;
+      padding: 10px 0;
+      border-radius: 80px;
+      text-align: center;
+    }
+    .nota { 
+      font-size: 0.85rem; 
+      color: #876b63; 
+      margin-top: 14px; 
+      font-weight: 600; 
+      opacity: 0.75;
+      text-align: center;
+    }
+
+    .separador {
+      height: 2px;
+      background: linear-gradient(to right, transparent, #eccfc5, transparent);
+      margin: 18px 0 10px;
+    }
+
+    .oculto { display: none !important; }
+
+    /* botón whatsapp */
+    .btn-wsp {
+      background: #25D366;
+      border: none;
+      padding: 14px 26px;
+      border-radius: 60px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: 0.25s;
+      box-shadow: 0 8px 18px rgba(37, 211, 102, 0.3);
+      letter-spacing: 0.5px;
+      width: fit-content;
+      margin: 18px auto 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Quicksand', sans-serif;
+      text-decoration: none;
+    }
+    .btn-wsp:hover {
+      background: #1fad57;
+      transform: scale(1.02) translateY(-2px);
+      box-shadow: 0 12px 24px rgba(37, 211, 102, 0.4);
+    }
+    .btn-wsp:active { transform: scale(0.96); }
+
+    .flex-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Reproductor personalizado al final */
+    .reproductor-box {
+      background: #f5dfd6;
+      border-radius: 24px;
+      padding: 14px;
+      margin: 18px 0 6px;
+      border: 1px solid #ebd0c4;
+      text-align: center;
+    }
+    .reproductor-titulo {
+      font-weight: 700;
+      color: #713f33;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .reproductor-controles {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-play {
+      background: #caa190;
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: 0.2s;
+    }
+    .btn-play:hover { background: #b58b7a; }
+    .barra-tiempo {
+      flex-grow: 1;
+      height: 6px;
+      background: #e2c1b4;
+      border-radius: 10px;
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+    }
+    .barra-tiempo::-webkit-slider-thumb {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #713f33;
+      cursor: pointer;
+    }
+    .tiempo-texto {
+      font-size: 0.8rem;
+      color: #713f33;
+      font-weight: 600;
+      min-width: 70px;
+    }
+
+    @media (max-width: 420px) {
+      .phone-card { padding: 1.6rem 1.2rem 1.8rem; }
+      h1 { font-size: 1.6rem; }
+      .sorpresa h2 { font-size: 1.7rem; }
+      .btn { padding: 14px 18px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Elemento de audio invisible que será controlado por la interfaz personalizada -->
+<audio id="audioPlayer" preload="auto">
+  <source src="amor.mp3" type="audio/mpeg">
+</audio>
+
+<div class="phone-card" id="appCard">
+  <h1><span>🌸</span> Sorpresa <span>✨</span></h1>
+
+  <!-- PASO 0: Inicio con clic obligatorio para activar la música -->
+  <div id="step0">
+    <p>Tengo algo especial para ti 💖</p>
+    <button class="btn" id="btnIniciar">Abrir Sorpresa 🎁</button>
+  </div>
+
+  <!-- PASO 1: validar "NATALY" -->
+  <div id="step1" class="oculto">
+    <div class="input-group">
+      <label for="nombreInput">✍️ Escribe tu segundo nombre</label>
+      <input type="text" id="nombreInput" placeholder="" autocomplete="off">
+      <button class="btn" id="btnValidarNataly">Validar 💖</button>
+    </div>
+    <div id="errorNataly" class="mensaje-error">⚠️ Escribe correctamente</div>
+    <div id="exitoNataly" class="mensaje-exito">✅ ¡Perfecto! Ahora sigue...</div>
+  </div>
+
+  <!-- PASO 2: Pregunta "¿Sabes mi segundo nombre?" -->
+  <div id="step2" class="oculto">
+    <div class="separador"></div>
+    <div class="input-group">
+      <label for="nombreAmielInput">🤔 ¿Sabes mi segundo nombre?</label>
+      <input type="text" id="nombreAmielInput" placeholder="" autocomplete="off">
+      <button class="btn" id="btnValidarAmiel">Responder 💕</button>
+    </div>
+    <div id="errorAmiel" class="mensaje-error">😱 Eh, ¿cómo es posible que te olvides?</div>
+    <div id="exitoAmiel" class="mensaje-exito">🎉 Correcto, ¡tienes buena memoria JAJA!</div>
+  </div>
+
+  <!-- SORPRESA FINAL -->
+  <div id="sorpresaFinal" class="sorpresa">
+    <div class="flores">🌷🌻🌺🌼</div>
+    <h2>¡Buenas tardes!</h2>
+    <div class="mensaje-dia">
+      <p>🌸 <strong>¡Buenas tardes, Aries!</strong> (aunque ya sea tarde, el cariño no tiene hora)</p>
+      <p>Hoy comienza un nuevo día y espero que Dios te bendiga, te cuide y te acompañe en cada paso que des. Sé que puedes lograr todo lo que te propongas. Confía en ti, da lo mejor de ti y haz que todo salga bien. Y si hoy las cosas no resultan como esperabas, siéntete orgullosa de haberlo intentado, porque cada esfuerzo te acerca más a tus metas. 💪✨</p>
+      <p>Ah, y hoy 1 de agosto es el <strong>Día de la Novia</strong>. 😂 Obviamente... <span style="font-size:1.3rem;">JAJAAJJA</span>, TODAVÍA NO ERES <strong>a</strong>. Pero, de todas formas, te deseo que tengas un día muy bonito y aquí te mando un ramito de flores para alegrarte el día. 💐😊</p>
+      <div class="ramito">💐🌷🌸🌹🌺</div>
+      <p style="margin-top:8px; font-size:1.1rem;">¡Que tengas un excelente inicio de agosto! 🌷✨</p>
+    </div>
+
+    <!-- Botón responder → WhatsApp -->
+    <div class="flex-center">
+      <a href="https://wa.me/51927191084?text=¡Hola%20Nataly!%20Gracias%20por%20la%20sorpresa%20🌸" 
+         target="_blank" 
+         class="btn-wsp" 
+         id="btnWhatsapp">
+         <span style="font-size:1.7rem; line-height:1;">💬</span> Responder
+      </a>
+    </div>
+
+    <!-- REPRODUCTOR CON AVANCE (LIMITADO A 2 MINUTOS) -->
+    <div class="reproductor-box">
+      <div class="reproductor-titulo">🎵 Música Especial (2:00)</div>
+      <div class="reproductor-controles">
+        <button class="btn-play" id="btnTogglePlay">⏸️</button>
+        <input type="range" id="barraTiempo" class="barra-tiempo" value="0" min="0" max="120" step="1">
+        <span class="tiempo-texto" id="tiempoTexto">0:00 / 2:00</span>
+      </div>
+    </div>
+
+    <div class="nota">💕 Con todo cariño para ti.</div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const step0 = document.getElementById('step0');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const sorpresa = document.getElementById('sorpresaFinal');
+
+    const btnIniciar = document.getElementById('btnIniciar');
+
+    const inputNataly = document.getElementById('nombreInput');
+    const btnNataly = document.getElementById('btnValidarNataly');
+    const errorNataly = document.getElementById('errorNataly');
+    const exitoNataly = document.getElementById('exitoNataly');
+
+    const inputAmiel = document.getElementById('nombreAmielInput');
+    const btnAmiel = document.getElementById('btnValidarAmiel');
+    const errorAmiel = document.getElementById('errorAmiel');
+    const exitoAmiel = document.getElementById('exitoAmiel');
+
+    const audio = document.getElementById('audioPlayer');
+    const btnTogglePlay = document.getElementById('btnTogglePlay');
+    const barraTiempo = document.getElementById('barraTiempo');
+    const tiempoTexto = document.getElementById('tiempoTexto');
+
+    const MAX_TIEMPO = 120; // 2 minutos exactos en segundos
+    let paso1Ok = false;
+
+    // Reproduce la música desde el inicio al presionar "Abrir Sorpresa"
+    btnIniciar.addEventListener('click', () => {
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log("Error al reproducir audio:", e));
+      }
+      step0.style.display = 'none';
+      step1.classList.remove('oculto');
+      step1.style.display = 'block';
+      inputNataly.focus();
+    });
+
+    // --- LÓGICA DE CONTROL DEL AUDIO Y BARRA DE PROGRESO (CORTADO A 2 MIN) ---
+    audio.addEventListener('timeupdate', () => {
+      const actual = audio.currentTime;
+
+      // Cortar y reiniciar si llega a los 2 minutos (120 segundos)
+      if (actual >= MAX_TIEMPO) {
+        audio.currentTime = 0;
+        audio.play();
+      }
+
+      // Actualizar la barra de avance
+      barraTiempo.value = Math.min(actual, MAX_TIEMPO);
+      
+      // Formatear el texto de tiempo (ej. 1:15 / 2:00)
+      const minActual = Math.floor(actual / 60);
+      const segActual = Math.floor(actual % 60).toString().padStart(2, '0');
+      tiempoTexto.textContent = `${minActual}:${segActual} / 2:00`;
+    });
+
+    // Control de reproducción manual (Play/Pausa)
+    btnTogglePlay.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        btnTogglePlay.textContent = '⏸️';
+      } else {
+        audio.pause();
+        btnTogglePlay.textContent = '▶️';
+      }
+    });
+
+    // Adelantar o retroceder manualmente mediante la barra slider
+    barraTiempo.addEventListener('input', () => {
+      audio.currentTime = barraTiempo.value;
+    });
+
+    function resetMensajesStep1() {
+      errorNataly.style.display = 'none';
+      exitoNataly.style.display = 'none';
+    }
+    function resetMensajesStep2() {
+      errorAmiel.style.display = 'none';
+      exitoAmiel.style.display = 'none';
+    }
+
+    // -------- PASO 1: validar NATALY --------
+    function validarNataly() {
+      const valor = inputNataly.value.trim().toUpperCase();
+      resetMensajesStep1();
+
+      if (valor === 'NATALY') {
+        exitoNataly.style.display = 'block';
+        errorNataly.style.display = 'none';
+        paso1Ok = true;
+        document.querySelector('#step1 .input-group').style.display = 'none';
+        step2.classList.remove('oculto');
+        step2.style.display = 'block';
+        inputAmiel.focus();
+      } else {
+        errorNataly.style.display = 'block';
+        exitoNataly.style.display = 'none';
+        paso1Ok = false;
+        step2.classList.add('oculto');
+        step2.style.display = 'none';
+        sorpresa.style.display = 'none';
+        document.querySelector('#step1 .input-group').style.display = 'flex';
+        inputNataly.value = '';
+        inputNataly.focus();
+      }
+    }
+
+    btnNataly.addEventListener('click', validarNataly);
+    inputNataly.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); validarNataly(); }
+    });
+
+    // -------- PASO 2: validar AMIEL --------
+    function validarAmiel() {
+      if (!paso1Ok) {
+        resetMensajesStep2();
+        errorAmiel.style.display = 'block';
+        errorAmiel.textContent = '⚠️ Primero valida tu segundo nombre.';
+        return;
+      }
+      const valor = inputAmiel.value.trim().toUpperCase();
+      resetMensajesStep2();
+
+      if (valor === 'AMIEL') {
+        exitoAmiel.style.display = 'block';
+        errorAmiel.style.display = 'none';
+        document.querySelector('#step2 .input-group').style.display = 'none';
+        sorpresa.style.display = 'block';
+      } else {
+        errorAmiel.style.display = 'block';
+        exitoAmiel.style.display = 'none';
+        sorpresa.style.display = 'none';
+        document.querySelector('#step2 .input-group').style.display = 'flex';
+        inputAmiel.value = '';
+        inputAmiel.focus();
+      }
+    }
+
+    btnAmiel.addEventListener('click', validarAmiel);
+    inputAmiel.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); validarAmiel(); }
+    });
+
+    // Inicialización
+    step1.classList.add('oculto');
+    step1.style.display = 'none';
+    step2.classList.add('oculto');
+    step2.style.display = 'none';
+    sorpresa.style.display = 'none';
+    resetMensajesStep1();
+    resetMensajesStep2();
+  })();
+</script>
+</body>
+</html>
